@@ -44,6 +44,11 @@ export const chapters = [
 			'code/report',
 		],
 	},
+	{
+		label: '4. Extra challenge',
+		intro: 'extra',
+		sections: [],
+	},
 ];
 
 // GitHub repository. The solutions of Chapter 3 are tagged step-0 ... step-5 (branch lab-code).
