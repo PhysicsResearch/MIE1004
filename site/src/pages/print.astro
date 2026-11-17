@@ -1,0 +1,58 @@
+---
+// All lab pages on one page, in the order of src/outline.mjs.
+// `npm run pdf` prints this page to the downloadable PDF.
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { getEntry, render } from 'astro:content';
+import { chapters, labTitle, sidePages } from '../outline.mjs';
+
+async function load(id: string) {
+	const entry = await getEntry('docs', id);
+	if (!entry) throw new Error(`print page: no page "${id}" in src/content/docs (check src/outline.mjs)`);
+	const { Content } = await render(entry);
+	return { id, title: entry.data.title, Content };
+}
+
+// Each section is followed by its side pages (help pages that are not in the sidebar).
+const withSidePages = (ids: string[]) =>
+	ids.flatMap((id) => [id, ...((sidePages as Record<string, string[]>)[id] ?? [])]);
+
+const overview = await load('index');
+const parts = await Promise.all(
+	chapters.map(async (chapter) => ({
+		intro: await load(chapter.intro),
+		sections: await Promise.all(withSidePages(chapter.sections).map(load)),
+	}))
+);
+const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<StarlightPage
+	frontmatter={{ title: labTitle, tableOfContents: false, pagefind: false, prev: false, next: false }}
+	hasSidebar={false}
+>
+	<div class="print-doc">
+		<p class="print-date">Version of {date}</p>
+		<overview.Content />
+		{
+			parts.map(({ intro, sections }) => (
+				<section class="chapter">
+					<h2 class="chapter-title">{intro.title}</h2>
+					<intro.Content />
+					{sections.map(({ title, Content }) => (
+						<section class="section">
+							<h3 class="section-title">{title}</h3>
+							<Content />
+						</section>
+					))}
+				</section>
+			))
+		}
+	</div>
+</StarlightPage>
+
+<script>
+	// Links between site pages don't work inside a PDF, so turn them into plain text.
+	document.querySelectorAll<HTMLAnchorElement>('.print-doc a[href^="/"]').forEach((link) => {
+		link.removeAttribute('href');
+	});
+</script>

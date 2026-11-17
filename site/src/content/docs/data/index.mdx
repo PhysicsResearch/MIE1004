@@ -1,0 +1,36 @@
+---
+title: 'Chapter 2: Getting the data from a public repository'
+description: Download a small set of CT scans from TCIA, check the licence and explore how the files are organised.
+sidebar:
+  label: Introduction
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import OptionalReading from '../../../components/OptionalReading.astro';
+
+Together with your partner, you download a small set of CT scans from [The Cancer Imaging Archive (TCIA)](https://www.cancerimagingarchive.net/), check under which terms the data may be reused, and explore how the files are organised on disk.
+
+Medical imaging data from clinical practice is heterogeneous and deeply nested. The scans come from scanners made by different vendors, each with its own calibration parameters, and the files are stored in several levels of folders.
+
+<Aside title="About the dataset">
+	We use the **NSCLC-Radiomics** (Non-Small Cell Lung Cancer) collection. Its CT scans were
+	acquired at several institutions on scanners from General Electric, Siemens and Philips.
+</Aside>
+
+## In this chapter
+
+Normally, you check the licence of a dataset before you download it. In this lab the download takes a while, so you start the download first and read the licence while the data downloads.
+
+1. [Search and select patients](/data/select-patients/): choose 3 to 5 patients with a mix of scanners.
+2. [Download the manifest](/data/manifest/): get the file that tells the download tool what to fetch.
+3. [Retrieve the images](/data/retrieve/): start downloading the DICOM files with TCIA Data Retriever.
+4. [Check the licence](/data/licence/): while the download runs, find out what you may do with the data.
+5. [Exploration challenge](/data/explore/): when the download has finished, work out how the folders are organised.
+
+<OptionalReading>
+	- [DICOM standard](https://www.dicomstandard.org/): the official website of the standard used
+	  for medical images.
+	- Aerts, H. J. W. L. et al. (2014). [Decoding tumour phenotype by noninvasive imaging using a
+	  quantitative radiomics approach](https://doi.org/10.1038/ncomms5006). _Nature Communications_
+	  5, 4006. The study that the NSCLC-Radiomics dataset comes from.
+</OptionalReading>

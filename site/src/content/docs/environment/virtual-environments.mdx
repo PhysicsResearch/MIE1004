@@ -1,0 +1,76 @@
+---
+title: 1.2 Virtual environments
+description: Create a separate conda environment for the lab and record it so others can rebuild it.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import OptionalReading from '../../../components/OptionalReading.astro';
+
+## Background information
+
+A **virtual environment** is a separate Python installation for one project, with its own packages and versions. It gives you two things:
+
+- **Isolation:** the packages for this lab don't interfere with your other projects, and the other way round. This matters because different projects and libraries have different dependencies, and many only work with certain versions of other packages. If you work on several projects in the same environment, installing or updating a package for one project can break the links another project relies on, and code you haven't touched can suddenly stop working.
+- **Reproducibility:** you can record the environment in a file, `environment.yml`, that lists all the packages and their exact versions. When someone else creates an environment from this file, conda downloads and installs the same packages in the same versions automatically. This saves time, avoids version conflicts, and means they get the same results from your analysis.
+
+## To do
+
+Run these commands in the terminal you opened in section 1.1.
+
+<Steps>
+
+1. Create an environment called `mie1004` with Python 3.11:
+
+   ```sh
+   conda create -n mie1004 python=3.11
+   ```
+
+   Type `y` and press Enter when conda asks whether to proceed.
+
+2. Activate the environment:
+
+   ```sh
+   conda activate mie1004
+   ```
+
+   Your prompt now starts with `(mie1004)`. Everything you install from now on goes into this environment.
+
+3. Install the packages for the lab from the `conda-forge` channel:
+
+   ```sh
+   conda install -c conda-forge pydicom numpy pandas matplotlib
+   ```
+
+   | Package      | Used for                                         |
+   | ------------ | ------------------------------------------------ |
+   | `pydicom`    | Reading DICOM files: the pixel data and metadata |
+   | `numpy`      | Working with the image pixels as arrays          |
+   | `pandas`     | Collecting metadata from many files in a table   |
+   | `matplotlib` | Showing images and plots                         |
+
+4. Record the environment in a file, so others can rebuild it:
+
+   ```sh
+   conda env export > environment.yml
+   ```
+
+   Someone else can then recreate the same environment with:
+
+   ```sh
+   conda env create -f environment.yml
+   ```
+
+   The exported file lists the exact package builds for your operating system, so it may not install on a different one. If your partner uses another operating system, they can create the environment with steps 1 to 3 instead.
+
+</Steps>
+
+<Aside type="tip" title="Good habits">
+	- Use one environment per project. Don't install project packages into the `base` environment.
+	- Keep `environment.yml` next to your code (in the same Git repository, if you use Git).
+	- Activate the environment (`conda activate mie1004`) every time you open a new terminal for the lab.
+</Aside>
+
+<OptionalReading>
+	- [Managing environments](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html):
+	  the conda user guide on creating, sharing and removing environments.
+</OptionalReading>

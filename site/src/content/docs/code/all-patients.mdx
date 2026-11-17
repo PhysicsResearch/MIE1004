@@ -1,0 +1,26 @@
+---
+title: 3.4 All patients and demographics
+description: Read the files in all subfolders and collect the sex and age of each patient.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import StepSolution from '../../../components/StepSolution.astro';
+
+## Background information
+
+So far the script reads one folder. Your download has several levels of folders: patient, study and series. Instead of setting each folder by hand, Python can go through all subfolders. For example, `Path(folder).rglob("*.dcm")` finds all DICOM files below a folder, however deeply they are nested.
+
+The header also contains demographics, such as the sex (`PatientSex`) and age (`PatientAge`) of the patient. The age is stored as text, for example `083Y` for 83 years.
+
+## To do
+
+<Steps>
+
+1. Change `DATA_FOLDER` to the top folder of your download: the folder that contains the patient folders.
+2. Change `read_metadata()` so it reads the DICOM files in all subfolders.
+3. Collect the sex and age of each patient.
+4. Discuss with your partner and write down your ideas: the age is missing for some patients. Would there be another option to get it?
+
+</Steps>
+
+<StepSolution step={3} />

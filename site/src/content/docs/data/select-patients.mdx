@@ -1,0 +1,30 @@
+---
+title: 2.1 Search and select patients
+description: Use the TCIA search portal to pick a small, varied cohort of 3 to 5 patients.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+## Background information
+
+The full collection has 422 patients (about 36 GB). You only need a small cohort of 3 to 5 patients: enough to compare different scanners, without long downloads.
+
+## To do
+
+<Steps>
+
+1. Open the [TCIA NBIA Search Portal](https://nbia.cancerimagingarchive.net/nbia-search/).
+2. In the filter panel on the left, click the search icon (magnifying glass) next to **Collections** and type `NSCLC-Radiomics`. The list now shows the **Community** group: click its arrow to open it, and tick **NSCLC-Radiomics**. Don't tick NSCLC-Radiomics-Genomics or NSCLC-Radiomics-Interobserver1, which are different collections.
+
+   ![The Collections filter of the TCIA search portal: NSCLC-Radiomics typed in the search box, and the Community group opened to show NSCLC-Radiomics, NSCLC-Radiomics-Genomics and NSCLC-Radiomics-Interobserver1. The search box and NSCLC-Radiomics are outlined in red.](../../../assets/tcia-search-collection.png)
+
+   The results table now lists the patients of the collection, 422 in total:
+
+   ![The results of the TCIA search portal with the NSCLC-Radiomics collection selected. The table shows 1 to 10 of 422 patients, with Patient IDs LUNG1-001 to LUNG1-010.](../../../assets/tcia-collection-loaded.png)
+
+3. Open the **Images** tab of the filter panel and, under **Image Modality**, select **CT** to filter out the other modalities.
+4. In the results table, look at the **Patient ID** column and select 3 to 5 different patients by hand, for example `LUNG1-002`, `LUNG1-014` and `LUNG1-085`.
+
+   **Don't click Select All.** Pick subjects from different result pages, so your cohort includes different scanner vendors and slice configurations.
+
+</Steps>

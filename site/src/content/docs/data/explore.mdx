@@ -1,0 +1,16 @@
+---
+title: 2.5 Exploration challenge
+description: Explore the downloaded folder tree and find out how DICOM data is organised.
+---
+
+## Background information
+
+The downloaded images are stored in several levels of nested folders. Before you can process the files automatically, you need to understand how they are organised.
+
+## To do
+
+When the download has finished, open `tcia_data` in your file explorer and follow the nested folders down to the individual `.dcm` files. Explore the folder tree with your partner, discuss these questions and write down your answers:
+
+- **Structure.** Walk down through every folder level. What pattern do you see in how the levels are organised? How many nested levels are there between the root folder and the slice files?
+- **Identifiers.** Look at the folder names. What do the long strings of digits separated by dots represent in medical imaging standards?
+- **Scalability.** If you had to analyse 1,000 patients instead of a handful, how feasible would it be to inspect the files by hand? How does this folder layout motivate the recursive Python automation in the next chapter?

@@ -1,0 +1,71 @@
+---
+title: Medical imaging with Python (CT / DICOM)
+description: MIE1004 Data Management Practical. Work with CT scans stored in the DICOM standard and process them in batches with Python.
+tableOfContents: false
+---
+
+import { Aside, LinkButton } from '@astrojs/starlight/components';
+import { pdf } from '../../outline.mjs';
+
+**MIE1004 · Data Management Practical**
+
+In this lab you work with Computed Tomography (CT) scans stored in the DICOM standard. You download real scans from a public archive, check what you are allowed to do with them, and use Python to process many images at once by reading the metadata stored in each file.
+
+<div class="actions print:hidden">
+	<LinkButton href="/environment/" icon="right-arrow">Start the lab</LinkButton>
+	{pdf.ready && (
+		<LinkButton href={pdf.href} download={pdf.filename} variant="secondary" icon="download" iconPlacement="start">
+			Download as PDF
+		</LinkButton>
+	)}
+</div>
+
+## At a glance
+
+- **Topic:** medical imaging (CT) in DICOM format
+- **Dataset:** NSCLC-Radiomics, from The Cancer Imaging Archive (TCIA)
+- **Tools:** Python (Anaconda or Miniconda), VS Code (optional)
+- **Collaboration:** work in groups of 2
+
+## About the code
+
+You download the starting code from this website, in Chapter 3. The code is deliberately **not ready to run**: there isn't time to write everything during the session, so you start from prepared code and make small changes and fixes until it works. You don't have to write it from scratch, but you should understand what it does and adapt it where needed.
+
+## Use of AI
+
+You may use AI assistants such as Claude, ChatGPT, Gemini and similar tools, as long as you use their **web-based versions**. Don't install AI tools on your computer that change your files automatically, such as AI extensions in your code editor or AI agents in the terminal.
+
+Use AI to:
+
+- explain how a piece of code works
+- suggest functions you could use
+- help you fix bugs
+
+Don't paste the lab instructions directly into an AI tool. Think about the problem first: work out a strategy and make a plan without AI, and then use AI only to help you implement your steps.
+
+<Aside type="tip" title="Keep thinking for yourself">
+	AI is a great tool and we should take advantage of it, but don't delegate your critical thinking
+	to it. Letting AI do the thinking might be faster and save you time, but at the cost of your
+	learning experience.
+</Aside>
+
+## What you will learn
+
+By the end of the lab you can:
+
+1. Find data in a public repository and check whether you are allowed to use it.
+2. Explain how the DICOM standard stores images together with their metadata.
+3. Process a batch of images with Python, using that metadata.
+4. Explain the FAIR data principles and why version control (such as Git) matters.
+
+## How the lab is organised
+
+- **Chapter 1: Working environment.** Set up Python, a virtual environment and VS Code, and learn the two good practices used throughout the lab: virtual environments and FAIR data.
+- **Chapter 2: Getting the data.** Download CT scans from a public repository, check the licence and explore how the files are organised.
+- **Chapter 3: Processing the data.** Starting from example code, write Python that reads the metadata of all the files, plots the demographics and checks the dataset.
+
+Some pages end with an **Optional reading** box, with links and resources in case you want to learn more about the topic. You don't need them to complete the lab.
+
+## Contact
+
+Gabriel · [g.paivafonseca@maastrichtuniversity.nl](mailto:g.paivafonseca@maastrichtuniversity.nl)

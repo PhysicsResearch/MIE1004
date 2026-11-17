@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Imaging data: download it from TCIA, don't commit it
+tcia_data/
+*.dcm
+*.tcia
+
+# Editors and OS
+.DS_Store
+Thumbs.db

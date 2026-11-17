@@ -1,0 +1,41 @@
+---
+title: 3.1 Run the starting code
+description: Download the starting code, point it to one of your CT series and run it.
+---
+
+import { Code, LinkButton, Steps } from '@astrojs/starlight/components';
+import starter from '@examples/dicom_metadata.py?raw';
+
+## Background information
+
+A DICOM file has two parts:
+
+- the **header**, with metadata about the patient, the scanner and the acquisition, stored as tags such as `AcquisitionDate` or `PatientID`
+- the **pixel data**: the image itself
+
+The starting script reads DICOM files with the `pydicom` package. It has two functions:
+
+- `read_metadata(folder)` lists the DICOM files in one folder, reads each file and collects its acquisition date. `ds.get("AcquisitionDate", "missing")` returns the value of the tag, or `"missing"` if the file doesn't have it.
+- `main()` calls `read_metadata()` and prints the dates.
+
+## To do
+
+<Steps>
+
+1. Download the starting code and save it in your project folder, the folder you opened in VS Code in section 1.4:
+
+   <LinkButton href="/downloads/dicom_metadata.py" download="dicom_metadata.py" variant="secondary" icon="download" iconPlacement="start">
+   	Download dicom_metadata.py
+   </LinkButton>
+
+   <Code code={starter} lang="py" title="dicom_metadata.py" wrap />
+
+2. Set `DATA_FOLDER` to the folder of one CT series of one of your patients: inside a patient folder and its study folder, the series folder with many files. Use the full path, and keep the `r` before the quotes so Windows paths with backslashes work.
+
+3. Run the script with the `mie1004` environment. It prints the number of files it found and the acquisition date of each file.
+
+4. Discuss with your partner and with another group that has different patients: for some patients the date is `missing`. Why could the same tag be present in the files of one patient and missing in the files of another?
+
+</Steps>
+
+Printing the same date for every file is not very useful yet. In the next steps you make the script more useful.

@@ -1,0 +1,32 @@
+---
+title: 2.2 Download the manifest (.tcia)
+description: Add your selected patients to the cart and download the manifest file.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+## Background information
+
+The manifest is a `.tcia` file that doesn't contain any images. It is a list of pointers to the image series you selected, which the download tool uses to fetch all of them in one batch.
+
+## To do
+
+<Steps>
+
+1. Click **Add to Cart** above the results table.
+2. Click the **Cart** icon in the top-right corner and check that it contains only the 3 to 5 patients you selected. The cart lists every image series of those patients, so you will see each patient more than once. It can look like this, including a warning:
+
+   ![The TCIA cart with series of patients LUNG1-001, LUNG1-026, LUNG1-060 and LUNG1-104, and a warning: "You have series with commercial use restrictions. Your cart contains 15 series with commercial restrictions. There is a filter available to exclude restricted series." The buttons are Proceed and Disable Commercial Series.](../../../assets/tcia-cart-warning.png)
+
+   Some series in the cart are segmentations (the **Segmentation** rows). You won't use them in this lab, but you can still download them and explore them if there is time at the end.
+
+3. Discuss with your partner and write down your answer: if you see a warning like this, how would you proceed?
+4. Before you download the data, click **Export spreadsheet** (top right of the cart, next to **Download**) to save a list of all the series in your cart. Open the file, for example in Excel, and inspect it with your partner:
+
+   - What information does the file give about each series?
+   - How many series does each patient have, and what kind of series are they?
+   - Which of this information could be useful later, when you process the images?
+
+5. Click **Download** to get the manifest file (`.tcia`).
+
+</Steps>

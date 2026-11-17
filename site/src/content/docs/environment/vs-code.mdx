@@ -1,0 +1,47 @@
+---
+title: 1.4 Code editor (VS Code)
+description: Set up VS Code with the Python extension and the mie1004 environment, and test the setup.
+---
+
+import { Code, Steps } from '@astrojs/starlight/components';
+import checkSetup from '@examples/check_setup.py?raw';
+import OptionalReading from '../../../components/OptionalReading.astro';
+
+## Background information
+
+An IDE (code editor) is optional: any text editor and a terminal are enough to complete the lab.
+
+These instructions use **VS Code** as an example, but you can decide for yourself which editor to use, for example PyCharm, Spyder or JupyterLab. With its Python extension, VS Code lets you select the `mie1004` environment as the interpreter, run and debug scripts, and use Git from the **Source Control** panel.
+
+## To do
+
+If you use VS Code, do this once, after you have created the `mie1004` environment in section 1.2. If you use another editor, follow the same idea: select the `mie1004` environment as the Python interpreter and run the test script in step 6.
+
+<Steps>
+
+1. **Install VS Code.** Download it from [code.visualstudio.com](https://code.visualstudio.com/) and run the installer with the default options.
+
+2. **Install the Python extension.** Open the Extensions view (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>, on macOS <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>), search for **Python** and install the extension published by **Microsoft**.
+
+3. **Open your project folder.** Use **File → Open Folder** and select the folder where you keep the lab code. Work from a folder rather than from single files, so VS Code remembers your settings.
+
+4. **Select the conda environment.** Open the Command Palette (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>, on macOS <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>), run **Python: Select Interpreter** and choose the entry that contains `mie1004`.
+
+5. **Open a terminal.** Use **Terminal → New Terminal**. The prompt should start with `(mie1004)`. If it doesn't, run `conda activate mie1004`.
+
+6. **Test the setup.** Create a file `check_setup.py` with the content below and run it with the **Run Python File** button (▷) in the top-right corner. The file is also in the course repository, in the `examples/` folder.
+
+   <Code code={checkSetup} lang="py" title="check_setup.py" />
+
+   The first line of the output should be a path that contains `mie1004`, followed by the version of each package. If you get a `ModuleNotFoundError` instead, the wrong interpreter is selected: repeat step 4.
+
+</Steps>
+
+Having trouble running `conda` in the VS Code terminal, or can't find `mie1004` in the interpreter list? [See how to fix it](/environment/conda-in-vs-code/).
+
+<OptionalReading>
+	- [Getting Started with Python in VS Code](https://code.visualstudio.com/docs/python/python-tutorial):
+	  the official tutorial, including running and debugging a script.
+	- [Python environments in VS Code](https://code.visualstudio.com/docs/python/environments): how
+	  VS Code finds and selects conda and other environments.
+</OptionalReading>

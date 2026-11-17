@@ -1,0 +1,64 @@
+---
+title: 1.1 Python with Anaconda or Miniconda
+description: Install Python through Anaconda or Miniconda and check that it works.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import OptionalReading from '../../../components/OptionalReading.astro';
+
+## Background information
+
+Both distributions install Python and the `conda` command, which the rest of this chapter uses. Either one works for this lab.
+
+| Distribution                                                                 | What you get                                                          | Choose it when                                                                                                                         |
+| ---------------------------------------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| [Anaconda](https://www.anaconda.com/download)                                | Python, `conda`, and a large set of pre-installed scientific packages | You want everything in one install and have a few GB of space                                                                          |
+| [Miniconda](https://www.anaconda.com/docs/getting-started/miniconda/install) | Python and `conda` only                                               | **Recommended**, unless you already have Anaconda or plan to use it in the future. A small install: you add packages as you need them. |
+
+<Aside title="Git and version control">
+	You don't need Git for this lab: you download the starting code from this website.
+
+	Git is a tool for **version control**: it records every change to your code, so you can see what
+	changed and when, go back to an earlier version, and work on the same code with others. It is
+	widely used in companies, and version control is a key part of professional software development.
+	In some fields, such as software for medical devices, it can even be a legal requirement.
+
+	Git is not covered in this session. We only mention it here as an illustration.
+</Aside>
+
+## To do
+
+<Steps>
+
+1. Go to the [Anaconda download page](https://www.anaconda.com/download) and choose **Build With Python**. Don't pick **Build With AI** (Kilo): it is an AI coding agent that works inside your editor, which is not allowed in this lab (see Use of AI on the Overview page).
+
+2. Select one of these two options, then download the installer for your operating system and run it with the default options:
+
+   ![The Build With Python options on the Anaconda download page: Anaconda Distribution (600+ packages, ready to go) and Miniconda (lightweight, just the essentials)](../../../assets/anaconda-build-with-python.png)
+
+3. Open a terminal:
+
+   - **Windows:** open **Anaconda Prompt** from the Start menu.
+   - **macOS or Linux:** open **Terminal**.
+
+4. Run these two commands:
+
+   ```sh
+   conda --version
+   python --version
+   ```
+
+5. Each command should print a version number. If you get "command not found" or "not recognized" instead:
+
+   - **Windows:** make sure you are in the Anaconda Prompt, not in the normal Command Prompt or PowerShell.
+   - **macOS or Linux:** close the terminal and open a new one. The installer only sets up `conda` for terminals opened after the installation.
+
+</Steps>
+
+<OptionalReading>
+	- [Learn Git, Sourcetree & BitBucket Tutorial: A Crash Course for Beginners](https://www.youtube.com/watch?v=x_3NA-_Rjwo):
+	  a video tutorial of about one hour on how to use Git with Sourcetree, a graphical Git app. In my
+	  opinion, this is the easiest and most intuitive way to use Git, and my research group at Maastro
+	  uses it the same way. There are many other ways to use Git, and lots of information about it on
+	  the internet.
+</OptionalReading>

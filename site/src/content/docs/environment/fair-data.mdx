@@ -1,0 +1,37 @@
+---
+title: 1.3 FAIR data
+description: The four FAIR principles and where you meet each one in this lab.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import OptionalReading from '../../../components/OptionalReading.astro';
+
+## Background information
+
+FAIR is a set of principles for making research data reusable, by people and by machines. Data is FAIR when it is **F**indable, **A**ccessible, **I**nteroperable and **R**eusable. You will meet each letter during the lab.
+
+| Principle         | What it means                                                                | Where you meet it in this lab                                                                 |
+| ----------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| **F**indable      | The data has a persistent identifier and is listed in a searchable resource. | The dataset has a persistent identifier and is listed in a searchable public archive (TCIA).  |
+| **A**ccessible    | The data can be retrieved through a standard, documented procedure.          | You download the scans with TCIA's documented tools: a manifest file and TCIA Data Retriever. |
+| **I**nteroperable | The data uses shared formats and standards, so different tools can read it.  | The images use the DICOM standard, so scans from different vendors can be read the same way.  |
+| **R**eusable      | The data comes with a clear licence, so you know what you may do with it.    | The dataset's licence and citation policy state what you may do with the data (section 2.4).  |
+
+## To do
+
+<Steps>
+
+1. Throughout the lab, pay attention to how the data is structured and stored: the folder layout, the file names, the metadata and the other information that comes with the data. Think about what could be improved.
+2. At the end of the lab, come up with a suggestion, together with your partner, on how to improve the storage and organisation of the data. Your suggestions will come up in the final discussion.
+
+</Steps>
+
+<OptionalReading>
+	- **[FAIR principles at Maastricht University](https://www.maastrichtuniversity.nl/research/open-science/fair-principles):
+	  short and very illustrative. A good place to start.**
+	- Wilkinson, M. D. et al. (2016). [The FAIR Guiding Principles for scientific data management
+	  and stewardship](https://doi.org/10.1038/sdata.2016.18). _Scientific Data_ 3, 160018. The
+	  original paper that introduced FAIR.
+	- [FAIR Principles](https://www.gofair.foundation/fair-principles): a short explanation of each
+	  principle by the GO FAIR Foundation.
+</OptionalReading>

@@ -1,0 +1,26 @@
+---
+title: 3.3 Make it faster
+description: Measure how long reading the files takes, and read only the metadata.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import StepSolution from '../../../components/StepSolution.astro';
+
+## Background information
+
+`pydicom.dcmread()` reads the whole file, including the pixel data, and `ds.pixel_array` turns the pixel data into an image. The pixel data is by far the largest part of a file, but you don't need it to read metadata.
+
+With a few hundred files the difference is a matter of seconds. The full NSCLC-Radiomics collection has more than 52,000 images, and real projects can have millions, so reading only what you need matters.
+
+## To do
+
+<Steps>
+
+1. Measure how long `read_metadata()` takes: in `main()`, call `time.perf_counter()` before and after it and print the difference.
+2. Change `read_metadata()` so it reads only the metadata, not the image. Look at the options of `dcmread()` in the [pydicom documentation](https://pydicom.github.io/pydicom/stable/reference/generated/pydicom.filereader.dcmread.html).
+3. Measure again and compare.
+4. Discuss with your partner: do you need to read every file? When would one file per folder be enough, and when not?
+
+</Steps>
+
+<StepSolution step={2} />

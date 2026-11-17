@@ -1,0 +1,33 @@
+---
+title: 2.3 Retrieve the images with TCIA Data Retriever
+description: Use TCIA Data Retriever and your manifest to download the DICOM images.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+## Background information
+
+TCIA Data Retriever is the download tool of TCIA. It reads your manifest and downloads all the image series listed in it in one batch.
+
+## To do
+
+<Steps>
+
+1. If it isn't installed on your computer yet, install [TCIA Data Retriever](https://wiki.cancerimagingarchive.net/display/NBIA/Downloading+TCIA+Images).
+
+2. Open TCIA Data Retriever and click the blue **+** button:
+
+   ![The TCIA Data Retriever window with an empty Active Downloads list ("No downloads queued") and a blue plus button to add a download.](../../../assets/tcia-retriever-start.png)
+
+3. In the **Manifest & Destination** window, use the folder buttons to choose:
+
+   - **Manifest file:** your `.tcia` file.
+   - **Download directory:** a new, empty folder for the download, outside your code folder (for example `Desktop/tcia_data`).
+
+   ![The Manifest & Destination window of TCIA Data Retriever, with a field and a folder button for the manifest file and for the download directory, and the buttons Fetch Files and Cancel.](../../../assets/tcia-retriever-manifest.png)
+
+4. Click **Fetch Files**. If you are asked to accept a data usage agreement, accept it. You can follow the progress under **Active Downloads**.
+
+5. While the download runs, continue with [2.4 Check the licence](/data/licence/).
+
+</Steps>

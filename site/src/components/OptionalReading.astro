@@ -1,0 +1,11 @@
+---
+// A box with extra links and resources for students who want to learn more.
+// Usage in a page:
+//   import OptionalReading from '../../../components/OptionalReading.astro';
+//   <OptionalReading>
+//   - [Title](https://...): one line on why it is worth reading.
+//   </OptionalReading>
+import { Aside } from '@astrojs/starlight/components';
+---
+
+<Aside title="Optional reading" icon="open-book"><slot /></Aside>

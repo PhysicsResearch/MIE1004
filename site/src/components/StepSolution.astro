@@ -1,0 +1,19 @@
+---
+// "Need help?" line for a step of Chapter 3. Links to the solution on GitHub:
+// the changes of this step (compared with the previous step) and the full code after it.
+// The solutions are commits on the lab-code branch, tagged step-1 ... step-5.
+import { repo } from '../outline.mjs';
+
+interface Props {
+	step: number;
+}
+
+const { step } = Astro.props;
+const changes = `${repo}/compare/step-${step - 1}...step-${step}`;
+const code = `${repo}/blob/step-${step}/examples/dicom_metadata.py`;
+---
+
+<p>
+	<strong>Need help?</strong> Try it yourself first. If you get stuck, look at a possible solution on
+	GitHub: <a href={changes}>what changed in this step</a>, or <a href={code}>the full code after this step</a>.
+</p>

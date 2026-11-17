@@ -1,0 +1,42 @@
+---
+title: 2.4 Check the licence
+description: Find the licence of the NSCLC-Radiomics dataset and what it lets you do. This is the R in FAIR.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import { Image } from 'astro:assets';
+import dataAccess from '../../../assets/tcia-data-access.png';
+import OptionalReading from '../../../components/OptionalReading.astro';
+
+## Background information
+
+Before you use public data, you need to know the legal terms for reusing and sharing it. This is the **R** (Reusable) in FAIR.
+
+Normally, you check the licence before you download anything. In this lab you started the download first to save time, so read the licence while the data downloads.
+
+## To do
+
+<Steps>
+
+1. Go to the [NSCLC-Radiomics collection page](https://www.cancerimagingarchive.net/collection/nsclc-radiomics/).
+2. Scroll down to the **Data Access** table and find the **License** column:
+
+   <a href={dataAccess.src} target="_blank">
+   	<Image src={dataAccess} alt="The Data Access table of the NSCLC-Radiomics collection page, with the License column outlined in red. The table has two rows: the images, segmentations and radiation therapy structures (DICOM), and the Lung1 clinical data (CSV)." />
+   </a>
+
+   Click the image to see it at full size.
+
+3. Read the **Citations & Data Usage Policy** section.
+4. Discuss these questions with your partner and write down your answers:
+
+   - Under which licence is this dataset published (for example Creative Commons BY 3.0 or 4.0)?
+   - Does the licence allow commercial reuse, such as building and selling a diagnostic AI application?
+   - What exactly must you do to meet the attribution requirement when you publish results?
+
+</Steps>
+
+<OptionalReading>
+	- [About CC Licenses](https://creativecommons.org/cc-licenses/): what the different Creative
+	  Commons licences allow, and what BY, NC, SA and ND stand for.
+</OptionalReading>

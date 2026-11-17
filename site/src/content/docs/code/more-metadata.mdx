@@ -1,0 +1,25 @@
+---
+title: 3.2 Extract more metadata
+description: Collect more tags from each DICOM file and show them in a table.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import StepSolution from '../../../components/StepSolution.astro';
+
+## Background information
+
+The header of a DICOM file contains many tags. Each tag has a keyword, such as `PatientID`, `Modality`, `Manufacturer` or `SliceThickness`, and you read it in the same way as the acquisition date: `ds.get("Modality")`. To see all the tags of a file, print the dataset with `print(ds)`.
+
+A table is an easier way to look at many values than a long list. The `pandas` package turns a list of dictionaries, one per file, into a table (a `DataFrame`).
+
+## To do
+
+<Steps>
+
+1. Print all the tags of one file and look at what information the header contains.
+2. Change `read_metadata()` so it collects several tags for each file. Choose the ones you find interesting, for example the patient ID, the modality, the scanner manufacturer and the slice thickness.
+3. Change `main()` so it shows the result as a table.
+
+</Steps>
+
+<StepSolution step={1} />

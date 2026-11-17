@@ -1,0 +1,79 @@
+/* Justified body text. Hyphenation keeps the gaps between words small on narrow screens. */
+.sl-markdown-content :is(p, li) {
+	text-align: justify;
+	hyphens: auto;
+}
+.sl-markdown-content code {
+	hyphens: none;
+}
+
+/* Row of buttons on the overview page. */
+.actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+}
+
+/* ---- Single-page version used for the PDF (src/pages/print.astro) ---- */
+
+.print-doc .print-date {
+	color: var(--sl-color-gray-3);
+	font-size: var(--sl-text-sm);
+}
+
+.print-doc .chapter {
+	margin-top: 3rem;
+	padding-top: 2rem;
+	border-top: 1px solid var(--sl-color-hairline);
+}
+
+.print-doc .chapter-title {
+	font-size: var(--sl-text-h2);
+}
+
+.print-doc .section {
+	margin-top: 2rem;
+}
+
+.print-doc .section-title {
+	font-size: var(--sl-text-h3);
+}
+
+/* Headings inside a chapter sit below the chapter and section titles. */
+.print-doc .chapter h2:not(.chapter-title) {
+	font-size: var(--sl-text-h4);
+}
+.print-doc .chapter h3:not(.section-title) {
+	font-size: var(--sl-text-h5);
+}
+
+/* Links to other site pages are turned into plain text on this page. */
+.print-doc a:not([href]) {
+	color: inherit;
+}
+
+@media print {
+	@page {
+		size: A4;
+		margin: 16mm 14mm;
+	}
+
+	/* The site header (search, theme switch) and the buttons are not useful on paper. */
+	body:has(.print-doc) .page > header,
+	.actions {
+		display: none;
+	}
+
+	/* Don't split short words in narrow first table columns ("Distrib-ution"). */
+	.sl-markdown-content :is(th, td):first-child,
+	.sl-markdown-content :is(th, td):first-child * {
+		overflow-wrap: normal;
+	}
+
+	.print-doc .chapter {
+		break-before: page;
+		margin-top: 0;
+		padding-top: 0;
+		border-top: 0;
+	}
+}
