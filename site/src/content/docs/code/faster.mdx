@@ -1,6 +1,6 @@
 ---
 title: 3.3 Make it faster
-description: Measure how long reading the files takes, and read only the metadata.
+description: Measure how long reading the files takes, and come up with a way to make it faster.
 ---
 
 import { Steps } from '@astrojs/starlight/components';
@@ -8,19 +8,27 @@ import StepSolution from '../../../components/StepSolution.astro';
 
 ## Background information
 
-`pydicom.dcmread()` reads the whole file, including the pixel data, and `ds.pixel_array` turns the pixel data into an image. The pixel data is by far the largest part of a file, but you don't need it to read metadata.
-
-With a few hundred files the difference is a matter of seconds. The full NSCLC-Radiomics collection has more than 52,000 images, and real projects can have millions, so reading only what you need matters.
+With a few hundred files, the script finishes in a second or so. The full NSCLC-Radiomics collection has more than 52,000 images, and real projects can have millions. At that scale, a script that does unnecessary work for every file can take hours instead of minutes. It is worth checking what your code does for each file, and whether all of it is needed.
 
 ## To do
 
 <Steps>
 
 1. Measure how long `read_metadata()` takes: in `main()`, call `time.perf_counter()` before and after it and print the difference.
-2. Change `read_metadata()` so it reads only the metadata, not the image. Look at the options of `dcmread()` in the [pydicom documentation](https://pydicom.github.io/pydicom/stable/reference/generated/pydicom.filereader.dcmread.html).
-3. Measure again and compare.
-4. Discuss with your partner: do you need to read every file? When would one file per folder be enough, and when not?
+2. Look at what `read_metadata()` does for each file. With your partner, come up with an idea to make it faster: what does the script do that it doesn't need to do?
+3. Change the code, measure again and compare.
 
 </Steps>
+
+<details>
+<summary>Check your idea. Open this only when you have a clear idea of what to change.</summary>
+
+A DICOM file stores the image in the **pixel data** element, tag `(7FE0,0010)`, at the end of the file. It is by far the largest part: in a CT file of this dataset, the pixel data is about 524 kB (512 × 512 pixels of 2 bytes each), while the header is only about 2 kB.
+
+The starting code reads the whole file with `pydicom.dcmread()`, pixel data included, and then `ds.pixel_array` turns the pixel data into an image. It does this for every file, but only uses the metadata. `dcmread()` has an option to stop reading before the pixel data: look for it in the [pydicom documentation](https://pydicom.github.io/pydicom/stable/reference/generated/pydicom.filereader.dcmread.html).
+
+Another common idea is to read only one file per folder. That is faster still, but usually all files are checked anyway: it is the only way to make sure they all belong to the same patient, and a folder can contain a mix of series or modalities, for example CT and MRI. Reading the metadata of all files is often a good idea.
+
+</details>
 
 <StepSolution step={2} />

@@ -51,6 +51,11 @@ const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'lo
 </StarlightPage>
 
 <script>
+	// A PDF can't be clicked open, so show the content of click-to-open boxes.
+	document.querySelectorAll<HTMLDetailsElement>('.print-doc details').forEach((box) => {
+		box.open = true;
+	});
+
 	// Links between site pages don't work inside a PDF, so turn them into plain text.
 	document.querySelectorAll<HTMLAnchorElement>('.print-doc a[href^="/"]').forEach((link) => {
 		link.removeAttribute('href');
