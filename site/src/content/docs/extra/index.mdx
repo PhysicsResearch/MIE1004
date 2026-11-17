@@ -48,7 +48,7 @@ Write a new script that reads one CT series folder and shows the three views in 
    print(len(slices), "slices")
    ```
 
-3. **Sort the slices.** Print the `InstanceNumber` of the first few slices: the order of the files is random. Sort them by `InstanceNumber` and print again. The `key` tells `sort()` which value to compare for each slice.
+3. **Sort the slices.** Print the `InstanceNumber` of the first few slices: the order of the files is random. Sort them by `InstanceNumber` and print again.
 
    ```py
    print([ds.InstanceNumber for ds in slices[:5]])
@@ -56,7 +56,16 @@ Write a new script that reads one CT series folder and shows the three views in 
    print([ds.InstanceNumber for ds in slices[:5]])
    ```
 
-   If `InstanceNumber` is not available, sort by the z position instead, from the highest z (the head) to the lowest:
+   **What `key=lambda` means.** `slices` is a list of datasets, and Python can't compare two datasets directly. The `key` tells `sort()` which value to compare for each slice. `lambda` writes a small function in one line, without giving it a name: `lambda ds: int(ds.InstanceNumber)` takes one slice, `ds`, and returns its `InstanceNumber` as a whole number. `sort()` calls this function for every slice and puts the slices in the order of the returned numbers. It does the same as writing a normal function:
+
+   ```py
+   def slice_number(ds):
+       return int(ds.InstanceNumber)
+
+   slices.sort(key=slice_number)
+   ```
+
+   If `InstanceNumber` is not available, sort by the z position instead. `reverse=True` turns the order around, so the slices go from the highest z (the head) to the lowest:
 
    ```py
    slices.sort(key=lambda ds: float(ds.ImagePositionPatient[2]), reverse=True)
