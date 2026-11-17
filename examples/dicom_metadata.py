@@ -1,8 +1,9 @@
 """Read metadata from DICOM files (MIE1004 lab, Chapter 3).
 
-Step 4: read_metadata() reads the metadata of the DICOM files in all
+Step 5: read_metadata() reads the metadata of the DICOM files in all
 subfolders of the data folder. get_demographics() collects the sex and age
 of each patient, and plot_demographics() shows them in a graph.
+make_report() summarises and checks the dataset.
 """
 
 import time
@@ -89,6 +90,35 @@ def plot_demographics(demographics, filename="demographics.png"):
     plt.show()
 
 
+def make_report(table, folder, filename="report.txt"):
+    """Summarise the dataset, check that each patient folder holds one patient, and save it."""
+    lines = [
+        "Dataset report",
+        f"Folder: {folder}",
+        f"Patient folders: {table['PatientFolder'].nunique()}",
+        f"Files: {len(table)}",
+        "",
+        "Files per patient folder:",
+    ]
+    for patient_folder, count in table.groupby("PatientFolder").size().items():
+        lines.append(f"  {patient_folder}: {count}")
+
+    lines += ["", "Modalities (number of files):"]
+    for modality, count in table["Modality"].value_counts().items():
+        lines.append(f"  {modality}: {count}")
+
+    lines += ["", "One patient per folder:"]
+    for patient_folder, files in table.groupby("PatientFolder"):
+        patient_ids = sorted(files["PatientID"].unique())
+        result = "OK" if len(patient_ids) == 1 else "PROBLEM"
+        lines.append(f"  {patient_folder}: {result} (PatientID: {', '.join(patient_ids)})")
+
+    report = "\n".join(lines)
+    print(report)
+    Path(filename).write_text(report + "\n", encoding="utf-8")
+    print(f"Saved the report as {filename}")
+
+
 def main():
     pd.set_option("display.max_columns", None)  # show all columns of the table
     pd.set_option("display.width", 200)
@@ -96,6 +126,8 @@ def main():
     start = time.perf_counter()
     table = read_metadata(DATA_FOLDER)
     print(f"Read {len(table)} files in {time.perf_counter() - start:.2f} s")
+
+    make_report(table, DATA_FOLDER)
 
     demographics = get_demographics(table)
     print(demographics)
