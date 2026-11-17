@@ -5,6 +5,10 @@ sidebar:
   label: Introduction
 ---
 
+import { Image } from 'astro:assets';
+import gitHistory from '../../../assets/git-history.png';
+import gitDiff from '../../../assets/git-diff.png';
+
 In this chapter you write Python code that reads the metadata of the DICOM files you downloaded, and use it to summarise the dataset. You start from a short example script and improve it step by step.
 
 Each step builds on the code of the previous one. Try each step yourself first, together with your partner. If you get stuck, every step links to a possible solution on GitHub, where you can see what changed in that step or the full code after it. There is more than one good way to solve each step.
@@ -19,3 +23,21 @@ Before you start, you need the `mie1004` environment from section 1.2 and the da
 4. [All patients and demographics](/code/all-patients/): go through all folders and collect sex and age.
 5. [Plot the demographics](/code/plot/): show the demographics in a simple graph.
 6. [Write a short report](/code/report/): summarise and check the dataset.
+
+## Example: how Git keeps track of the steps
+
+The possible solutions are kept with Git, the version-control tool from section 1.1. You don't need Git for this lab, but the solutions show how it works in practice.
+
+Each step is saved as a **commit**: a snapshot of the code with a short description of what changed. In Sourcetree, a graphical Git app, the history looks like this. Each row is a commit. The **main** branch (red) holds the website, and the **lab-code** branch (blue) holds the code, with one commit per step, labelled `step-1` to `step-5`:
+
+<a href={gitHistory.src} target="_blank">
+	<Image src={gitHistory} alt="The commit history in Sourcetree. The main branch, in red, holds the commits of the website. The lab-code branch, in blue, starts at the commit labelled step-0 and has one commit per step, labelled step-1 to step-5." />
+</a>
+
+When you open a commit, Git shows exactly what changed in it. Here is step 4: lines that were **added are shown in green**, and lines that were **removed are shown in red**. Every change can be reversed, for example with the **Reverse hunk** button, so you can always go back to an earlier version of your code.
+
+<a href={gitDiff.src} target="_blank">
+	<Image src={gitDiff} alt="The changes of step 4 in examples/dicom_metadata.py, shown in Sourcetree. Removed lines are highlighted in red and added lines in green, for example the new plot_demographics() function. Each block of changes has a Reverse hunk button." />
+</a>
+
+Click an image to see it at full size. The "what changed in this step" links on the next pages show the same kind of view on GitHub.

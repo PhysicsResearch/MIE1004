@@ -7,6 +7,12 @@
 	hyphens: none;
 }
 
+/* Images that link to their full-size version: give them the same spacing as other images. */
+.sl-markdown-content a:has(> img) {
+	display: block;
+	margin-block: 1rem;
+}
+
 /* Row of buttons on the overview page. */
 .actions {
 	display: flex;
