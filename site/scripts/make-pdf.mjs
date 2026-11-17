@@ -2,24 +2,27 @@
 //
 //   npm run pdf
 //
-// That command builds the site first, then runs this script, which serves the built site
-// locally and prints /print/ to public/<pdf file> with Microsoft Edge or Google Chrome.
-// Commit the new PDF so Vercel publishes it. To use another Chromium-based browser,
+// That command builds the site first, then runs this script. The script serves the built site
+// locally, opens /print/ in Google Chrome or Microsoft Edge (headless), waits until all images
+// are loaded, and prints it to public/<pdf file> with the website address and page numbers in
+// the footer. Commit the new PDF so Vercel publishes it.
+//
+// Needs Node.js 22 or newer and Chrome or Edge. To use another Chromium-based browser,
 // set the CHROME_PATH environment variable to its executable.
 
-import { execFile } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { mkdtemp, readFile, rm, stat } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import { extname, join, normalize, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { promisify } from 'node:util';
-import { pdf } from '../src/outline.mjs';
+import { pdf, siteUrl } from '../src/outline.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const dist = join(root, 'dist');
 const output = join(root, 'public', pdf.href.replace(/^\//, ''));
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const contentTypes = {
 	'.html': 'text/html; charset=utf-8',
@@ -53,6 +56,14 @@ function findBrowser() {
 	return browser;
 }
 
+// Footer of every page: the website address and the page number.
+const footer = `
+	<div style="width: 100%; padding: 0 14mm; font-family: sans-serif; font-size: 8px; color: #666;
+	            display: flex; justify-content: space-between;">
+		<span>MIE1004 Lab · ${siteUrl.replace(/^https?:\/\//, '')}</span>
+		<span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
+	</div>`;
+
 if (!existsSync(join(dist, 'print', 'index.html'))) {
 	throw new Error('dist/print/index.html is missing. Run `npm run pdf` (it builds the site first).');
 }
@@ -73,39 +84,85 @@ const server = createServer(async (request, response) => {
 	}
 });
 await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
-const { port } = server.address();
+const pageUrl = `http://127.0.0.1:${server.address().port}/print/`;
 
-// Edge on Windows can return before it has finished printing, so wait until the
-// PDF file exists and has stopped growing.
-async function waitForPdf(timeoutMs = 60_000) {
-	let lastSize = -1;
-	for (let waited = 0; waited < timeoutMs; waited += 500) {
-		const size = existsSync(output) ? (await stat(output)).size : -1;
-		if (size > 0 && size === lastSize) return;
-		lastSize = size;
-		await new Promise((resolve) => setTimeout(resolve, 500));
-	}
-	throw new Error(`The browser did not write ${output} within ${timeoutMs / 1000} s.`);
-}
-
-await rm(output, { force: true });
-
-// A throwaway browser profile, so this works even while the browser is already open.
+// Start the browser with a throwaway profile, so this works even while the browser is open.
+// With --remote-debugging-port=0 the browser picks a free port and writes it to DevToolsActivePort.
 const profile = await mkdtemp(join(tmpdir(), 'lab-pdf-'));
+const browser = spawn(
+	findBrowser(),
+	['--headless', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
+		`--user-data-dir=${profile}`, '--remote-debugging-port=0', 'about:blank'],
+	{ stdio: 'ignore' }
+);
+
 try {
-	await promisify(execFile)(findBrowser(), [
-		'--headless',
-		'--disable-gpu',
-		'--no-first-run',
-		`--user-data-dir=${profile}`,
-		'--no-pdf-header-footer',
-		'--virtual-time-budget=10000',
-		`--print-to-pdf=${output}`,
-		`http://127.0.0.1:${port}/print/`,
-	]);
-	await waitForPdf();
+	let port;
+	for (let i = 0; i < 150 && !port; i++) {
+		await sleep(200);
+		const portFile = join(profile, 'DevToolsActivePort');
+		if (existsSync(portFile)) port = Number((await readFile(portFile, 'utf8')).split('\n')[0]);
+	}
+	if (!port) throw new Error('The browser did not start.');
+
+	let target;
+	for (let i = 0; i < 50 && !target; i++) {
+		const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
+		target = targets.find((t) => t.type === 'page');
+		if (!target) await sleep(200);
+	}
+	if (!target) throw new Error('The browser has no page to print.');
+
+	// Talk to the page with the Chrome DevTools Protocol.
+	const socket = new WebSocket(target.webSocketDebuggerUrl);
+	await new Promise((resolve, reject) => {
+		socket.onopen = resolve;
+		socket.onerror = reject;
+	});
+	let nextId = 0;
+	const pending = new Map();
+	socket.onmessage = (event) => {
+		const message = JSON.parse(event.data);
+		pending.get(message.id)?.(message);
+		pending.delete(message.id);
+	};
+	const send = (method, params = {}) =>
+		new Promise((resolve, reject) => {
+			const id = ++nextId;
+			pending.set(id, (message) => (message.error ? reject(new Error(message.error.message)) : resolve(message.result)));
+			socket.send(JSON.stringify({ id, method, params }));
+		});
+	const evaluate = async (expression) =>
+		(await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true })).result.value;
+
+	await send('Page.enable');
+	await send('Page.navigate', { url: pageUrl });
+
+	// Wait until the page, its fonts and all its images are loaded.
+	const ready = `document.readyState === 'complete'
+		&& document.querySelector('.print-doc') !== null
+		&& [...document.images].every((img) => img.complete && img.naturalWidth > 0)`;
+	let loaded = false;
+	for (let i = 0; i < 300 && !loaded; i++) {
+		await sleep(200);
+		loaded = await evaluate(ready).catch(() => false);
+	}
+	if (!loaded) throw new Error('The print page did not finish loading.');
+	await evaluate('document.fonts.ready.then(() => true)');
+
+	const { data } = await send('Page.printToPDF', {
+		printBackground: true,
+		preferCSSPageSize: true,
+		displayHeaderFooter: true,
+		headerTemplate: '<div></div>',
+		footerTemplate: footer,
+	});
+	await writeFile(output, Buffer.from(data, 'base64'));
 	console.log(`PDF written to ${output}`);
+	socket.close();
 } finally {
+	browser.kill();
 	server.close();
+	await sleep(500);
 	await rm(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 500 });
 }

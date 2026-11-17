@@ -10,6 +10,9 @@ import { join } from 'node:path';
 
 export const labTitle = 'MIE1004 Lab Session – Medical Imaging with Python (CT / DICOM)';
 
+// Address of the published website (Vercel). Used for links in the PDF.
+export const siteUrl = 'https://mie-1004.vercel.app';
+
 export const chapters = [
 	{
 		label: '1. Working environment',

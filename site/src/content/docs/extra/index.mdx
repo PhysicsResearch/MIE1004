@@ -24,17 +24,101 @@ To build the stack, the slices must be in the right order, and the file names do
 
 ## To do
 
-Write a new, simple script: you set one folder, the script reads it and shows one figure with the three views.
+Write a new script that reads one CT series folder and shows the three views in one figure. Build it piece by piece: each step below gives you a piece of the puzzle. Add the pieces to your script one at a time, and run it after each step to check that it works.
 
 <Steps>
 
-1. Set the folder of one CT series, as in section 3.1.
-2. Read all the DICOM files in the folder, this time including the image (`ds.pixel_array`).
-3. Sort the slices by `InstanceNumber`. If it is not available, sort them by the z value of `ImagePositionPatient` (the third value), from the highest (the head) to the lowest.
-4. Stack the images into a 3D NumPy array with `np.stack()`. Its shape is (slices, rows, columns).
-5. Take the middle slice in each direction. The axial one is `volume[n_slices // 2, :, :]`; work out the coronal and sagittal ones yourself.
-6. Plot the three views next to each other in gray, with `plt.subplots(1, 3)` and `imshow(..., cmap="gray")`.
-7. Look at the coronal and sagittal views: do they look squashed? The slices are 3 mm apart, but the pixels are only about 1 mm wide. Use the `aspect` option of `imshow()` with the ratio of `SliceThickness` to `PixelSpacing` to fix this.
+1. **Import the packages.** NumPy works with arrays, pydicom reads the DICOM files and matplotlib makes the figure.
+
+   ```py
+   from pathlib import Path
+
+   import matplotlib.pyplot as plt
+   import numpy as np
+   import pydicom
+   ```
+
+2. **Read all files of one CT series**, this time including the images. Set the folder as in section 3.1.
+
+   ```py
+   DATA_FOLDER = r"path\to\one\CT\series\folder"
+
+   files = list(Path(DATA_FOLDER).glob("*.dcm"))
+   slices = [pydicom.dcmread(file) for file in files]
+   print(len(slices), "slices")
+   ```
+
+3. **Sort the slices.** Print the `InstanceNumber` of the first few slices: the order of the files is random. Sort them by `InstanceNumber` and print again. The `key` tells `sort()` which value to compare for each slice.
+
+   ```py
+   print([ds.InstanceNumber for ds in slices[:5]])
+   slices.sort(key=lambda ds: int(ds.InstanceNumber))
+   print([ds.InstanceNumber for ds in slices[:5]])
+   ```
+
+   If `InstanceNumber` is not available, sort by the z position instead, from the highest z (the head) to the lowest:
+
+   ```py
+   slices.sort(key=lambda ds: float(ds.ImagePositionPatient[2]), reverse=True)
+   ```
+
+4. **Get the dimensions of the 3D array**: the number of slices, and the number of rows and columns of each image.
+
+   ```py
+   n_slices = len(slices)
+   n_rows = slices[0].Rows
+   n_columns = slices[0].Columns
+   print(n_slices, n_rows, n_columns)
+   ```
+
+5. **Get the number type.** CT images are stored as whole numbers of 16 bits, for example `int16` or `uint16`. Use the same type for the 3D array.
+
+   ```py
+   dtype = slices[0].pixel_array.dtype
+   print(dtype)
+   ```
+
+6. **Set up an empty 3D array** with these dimensions and this number type.
+
+   ```py
+   volume = np.zeros((n_slices, n_rows, n_columns), dtype=dtype)
+   ```
+
+7. **Fill the array**, one slice at a time, in the sorted order.
+
+   ```py
+   for i, ds in enumerate(slices):
+       volume[i, :, :] = ds.pixel_array
+   ```
+
+8. **Cut the three views** through the middle of the volume. The first index selects the slice, the second the row and the third the column.
+
+   ```py
+   axial = volume[n_slices // 2, :, :]
+   coronal = volume[:, n_rows // 2, :]
+   sagittal = volume[:, :, n_columns // 2]
+   ```
+
+9. **Calculate the aspect ratio.** The slices are 3 mm apart, but the pixels are only about 1 mm wide. Without a correction, the coronal and sagittal views look squashed.
+
+   ```py
+   aspect = float(slices[0].SliceThickness) / float(slices[0].PixelSpacing[0])
+   ```
+
+10. **Plot the three views** next to each other.
+
+    ```py
+    fig, axes = plt.subplots(1, 3, figsize=(12, 5))
+    axes[0].imshow(axial, cmap="gray")
+    axes[0].set_title("Axial")
+    axes[1].imshow(coronal, cmap="gray", aspect=aspect)
+    axes[1].set_title("Coronal")
+    axes[2].imshow(sagittal, cmap="gray", aspect=aspect)
+    axes[2].set_title("Sagittal")
+    plt.show()
+    ```
+
+11. **Tidy up.** When everything works, put the pieces into functions, for example `read_volume(folder)` and `plot_views(volume, aspect)`, called from `main()` as in Chapter 3.
 
 </Steps>
 

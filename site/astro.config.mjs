@@ -2,10 +2,11 @@
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import { chapters, pdf } from './src/outline.mjs';
+import { chapters, pdf, siteUrl } from './src/outline.mjs';
 
 // https://astro.build/config
 export default defineConfig({
+	site: siteUrl,
 	integrations: [
 		starlight({
 			title: 'MIE1004 Medical Imaging Lab',

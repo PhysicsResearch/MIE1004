@@ -3,7 +3,7 @@
 // `npm run pdf` prints this page to the downloadable PDF.
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { getEntry, render } from 'astro:content';
-import { chapters, labTitle, sidePages } from '../outline.mjs';
+import { chapters, labTitle, sidePages, siteUrl } from '../outline.mjs';
 
 async function load(id: string) {
 	const entry = await getEntry('docs', id);
@@ -24,15 +24,52 @@ const parts = await Promise.all(
 	}))
 );
 const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+const siteLabel = siteUrl.replace(/^https?:\/\//, '');
 ---
 
 <StarlightPage
 	frontmatter={{ title: labTitle, tableOfContents: false, pagefind: false, prev: false, next: false }}
 	hasSidebar={false}
 >
-	<div class="print-doc">
-		<p class="print-date">Version of {date}</p>
-		<overview.Content />
+	<div class="print-doc" data-site={siteUrl}>
+		<div class="print-cover">
+			<p class="print-course">MIE1004 · Data Management Practical</p>
+			<p class="print-date">Version of {date}</p>
+
+			<div class="print-site-note">
+				<p class="print-site-label">Follow the instructions on the website</p>
+				<p class="print-site-url"><a href={siteUrl}>{siteLabel}</a></p>
+				<p>
+					This PDF is additional material and a backup, for example to read offline or to print. The
+					website is always the most up-to-date version, and it has the downloads and links you need
+					during the lab.
+				</p>
+			</div>
+
+			<p class="print-contents-title">Contents</p>
+			<ul class="print-contents">
+				<li>Overview</li>
+				{
+					parts.map(({ intro, sections }) => (
+						<li>
+							{intro.title}
+							{sections.length > 0 && (
+								<ul>
+									{sections.map(({ title }) => (
+										<li>{title}</li>
+									))}
+								</ul>
+							)}
+						</li>
+					))
+				}
+			</ul>
+		</div>
+
+		<section class="chapter">
+			<h2 class="chapter-title">Overview</h2>
+			<overview.Content />
+		</section>
 		{
 			parts.map(({ intro, sections }) => (
 				<section class="chapter">
@@ -56,8 +93,15 @@ const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'lo
 		box.open = true;
 	});
 
-	// Links between site pages don't work inside a PDF, so turn them into plain text.
+	// Links between pages of the site point to the published website in the PDF.
+	const site = document.querySelector<HTMLElement>('.print-doc')?.dataset.site ?? '';
 	document.querySelectorAll<HTMLAnchorElement>('.print-doc a[href^="/"]').forEach((link) => {
-		link.removeAttribute('href');
+		if (site) link.href = site + link.getAttribute('href');
+		else link.removeAttribute('href');
+	});
+
+	// Images are loaded lazily on the website; load them all now so they appear in the PDF.
+	document.querySelectorAll<HTMLImageElement>('.print-doc img').forEach((img) => {
+		img.loading = 'eager';
 	});
 </script>
