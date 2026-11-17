@@ -1,9 +1,10 @@
 """Read metadata from DICOM files (MIE1004 lab, Chapter 3).
 
-Step 1: read_metadata() reads every DICOM file in one folder and collects
-several tags of each file in a table. main() prints the table.
+Step 2: read_metadata() reads only the metadata of every DICOM file in one
+folder, not the images, which makes it much faster. main() measures the time.
 """
 
+import time
 from pathlib import Path
 
 import pandas as pd
@@ -28,8 +29,7 @@ def read_metadata(folder):
 
     rows = []
     for file in files:
-        ds = pydicom.dcmread(file)  # read the whole file
-        image = ds.pixel_array  # the image of this slice, as a NumPy array
+        ds = pydicom.dcmread(file, stop_before_pixels=True)  # read only the metadata, not the image
         row = {tag: ds.get(tag, "missing") for tag in TAGS}
         rows.append(row)
     return pd.DataFrame(rows)
@@ -39,7 +39,9 @@ def main():
     pd.set_option("display.max_columns", None)  # show all columns of the table
     pd.set_option("display.width", 200)
 
+    start = time.perf_counter()
     table = read_metadata(DATA_FOLDER)
+    print(f"Read {len(table)} files in {time.perf_counter() - start:.2f} s")
     print(table)
 
 
