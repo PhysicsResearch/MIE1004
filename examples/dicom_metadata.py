@@ -1,13 +1,14 @@
 """Read metadata from DICOM files (MIE1004 lab, Chapter 3).
 
-Step 3: read_metadata() reads the metadata of the DICOM files in all
+Step 4: read_metadata() reads the metadata of the DICOM files in all
 subfolders of the data folder. get_demographics() collects the sex and age
-of each patient. main() prints them.
+of each patient, and plot_demographics() shows them in a graph.
 """
 
 import time
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import pandas as pd
 import pydicom
 
@@ -67,6 +68,27 @@ def get_demographics(table):
     return pd.DataFrame(patients).astype({"Age": "Int64"})
 
 
+def plot_demographics(demographics, filename="demographics.png"):
+    """Plot the number of patients per sex and the age of each patient, and save the graph."""
+    fig, (ax_sex, ax_age) = plt.subplots(1, 2, figsize=(10, 4))
+
+    counts = demographics["Sex"].value_counts()
+    ax_sex.bar(counts.index, counts.values)
+    ax_sex.set_title("Patients per sex")
+    ax_sex.set_ylabel("Number of patients")
+
+    known = demographics.dropna(subset=["Age"])  # patients without an age are left out
+    ax_age.bar(known["PatientID"], known["Age"])
+    ax_age.set_title(f"Age per patient ({len(known)} of {len(demographics)} known)")
+    ax_age.set_ylabel("Age (years)")
+    ax_age.tick_params(axis="x", rotation=45)
+
+    fig.tight_layout()
+    fig.savefig(filename)
+    print(f"Saved the graph as {filename}")
+    plt.show()
+
+
 def main():
     pd.set_option("display.max_columns", None)  # show all columns of the table
     pd.set_option("display.width", 200)
@@ -77,6 +99,7 @@ def main():
 
     demographics = get_demographics(table)
     print(demographics)
+    plot_demographics(demographics)
 
 
 if __name__ == "__main__":
