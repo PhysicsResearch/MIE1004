@@ -3,12 +3,57 @@ title: 3.4 All patients and demographics
 description: Read the files in all subfolders and collect the sex and age of each patient.
 ---
 
-import { Steps } from '@astrojs/starlight/components';
+import { FileTree, Steps } from '@astrojs/starlight/components';
 import StepSolution from '../../../components/StepSolution.astro';
 
 ## Background information
 
-So far the script reads one folder. Your download has several levels of folders: patient, study and series. Instead of setting each folder by hand, Python can go through all subfolders. For example, `Path(folder).rglob("*.dcm")` finds all DICOM files below a folder, however deeply they are nested.
+So far the script reads one folder: one series of one patient. Your download has several levels of folders: a folder for each patient, inside it a folder for the study, and inside that a folder for each series. The DICOM files are only in the series folders. For example, a download of five patients looks like this:
+
+<FileTree>
+- nsclc_radiomics/ the top folder of the download
+  - LUNG1-001/ patient
+    - 2008-09-18-69331/ study
+      - 0-82046/ series: the CT scan, 134 files
+        - 0269d511-9a8e-4e5f-8d77-f4eae680ee2d.dcm
+        - 06737c22-c035-4058-a9db-7eaff20fb079.dcm
+        - …
+      - 3-78236/ series: RTSTRUCT, 1 file
+        - 5bcda93e-ef26-4a58-a7b4-47832c15a000.dcm
+      - 300-Segmentation-9.554/ series: SEG, 1 file
+        - 553521b9-f9e8-4103-b04d-5f032b974b68.dcm
+  - LUNG1-026/ next patient, with the same levels inside
+    - …
+  - LUNG1-060/
+  - LUNG1-104/
+  - LUNG1-139/
+</FileTree>
+
+Instead of setting each series folder by hand, Python can search through all the subfolders. `Path(folder).glob("*.dcm")` only looks inside the folder itself. `Path(folder).rglob("*.dcm")` also looks inside all its subfolders, and their subfolders, however many levels deep: the *r* stands for *recursive*. For example, with the top folder of the download above:
+
+```py
+from pathlib import Path
+
+folder = Path(r"C:\Users\yourname\Downloads\nsclc_radiomics")
+
+files = list(folder.glob("*.dcm"))  # only the top folder itself
+print(len(files))
+
+files = sorted(folder.rglob("*.dcm"))  # the top folder and all its subfolders
+print(len(files))
+for file in files[:3]:
+    print(file.relative_to(folder))  # the path below the top folder
+```
+
+```text title="Output"
+0
+792
+LUNG1-001\2008-09-18-69331\0-82046\0269d511-9a8e-4e5f-8d77-f4eae680ee2d.dcm
+LUNG1-001\2008-09-18-69331\0-82046\06737c22-c035-4058-a9db-7eaff20fb079.dcm
+LUNG1-001\2008-09-18-69331\0-82046\07c9164f-a0b8-4d9c-a277-bf2b21f20d26.dcm
+```
+
+`glob` finds nothing, because the top folder only contains folders. `rglob` finds all 792 files of the five patients, three folder levels down. The first part of each path is the patient folder.
 
 The header also contains demographics, such as the sex (`PatientSex`) and age (`PatientAge`) of the patient. The age is stored as text, for example `083Y` for 83 years.
 
